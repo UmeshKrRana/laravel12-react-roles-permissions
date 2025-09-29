@@ -1,6 +1,7 @@
 import { CustomModalForm } from '@/components/custom-modal-form';
 import { CustomTable } from '@/components/custom-table';
 import { CustomToast, toast } from '@/components/custom-toast';
+import { Pagination } from '@/components/ui/pagination';
 import { PermissionModalFormConfig } from '@/config/forms/permission-modal-form';
 import { PermissionsTableConfig } from '@/config/tables/permissions-table';
 import AppLayout from '@/layouts/app-layout';
@@ -58,7 +59,7 @@ interface IndexProps {
     filteredCount: number;
 }
 
-export default function Index({ permissions }: IndexProps) {
+export default function Index({ permissions, totalCount, filteredCount }: IndexProps) {
     const { flash } = usePage<{ flash?: { success?: string; error?: string } }>().props;
     const flashMessage = flash?.success || flash?.error;
     const [modalOpen, setModalOpen] = useState(false);
@@ -70,6 +71,7 @@ export default function Index({ permissions }: IndexProps) {
         label: '',
         description: '',
         _method: 'POST',
+        perPage: '10',
     });
 
     // Handle Delete
@@ -165,6 +167,21 @@ export default function Index({ permissions }: IndexProps) {
         setModalOpen(true);
     };
 
+    // Handle Per Page Change
+    const handlePerPageChange = (value: string) => {
+        setData('perPage', value);
+
+        const queryString = {
+            ...(data.search && { search: data.search }),
+            ...(value && { perPage: value }),
+        };
+
+        router.get(route('permissions.index'), queryString, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Categories" />
@@ -201,6 +218,16 @@ export default function Index({ permissions }: IndexProps) {
                     onView={(category) => openModal('view', category)}
                     onEdit={(category) => openModal('edit', category)}
                     isModal={true}
+                />
+
+                {/* Pagination */}
+                <Pagination
+                    products={permissions}
+                    perPage={data.perPage}
+                    onPerPageChange={handlePerPageChange}
+                    totalCount={totalCount}
+                    filteredCount={filteredCount}
+                    search={data.search}
                 />
             </div>
         </AppLayout>

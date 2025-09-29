@@ -101,6 +101,7 @@ export const CustomModalForm = ({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange} modal>
+
             {/* Button will trigger modal */}
             {addButton.permission && hasPermission(permissions, addButton.permission) && (
                 <DialogTrigger asChild>

@@ -10,7 +10,8 @@ export const CategoryModalFormConfig = {
         className: 'bg-indigo-700 text-white rounded-lg px-4 py-2 hover:bg-indigo-800 cursor-pointer',
         icon: CirclePlus,
         type: 'button',
-        variant: 'default'
+        variant: 'default',
+        permission: 'create-category',
     },
     fields: [
         {
